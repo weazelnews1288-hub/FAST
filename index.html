@@ -1,514 +1,563 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LS Racing — Гоночное сообщество Лос-Сантоса</title>
-
-<!-- Шрифт с поддержкой кириллицы и жирным курсивом (как в заголовке макета) -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weazel News</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,800;1,800;1,900&display=swap" rel="stylesheet">
-
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap">
+<!-- Всё редактируемое — блок «НАСТРОЙКИ И КОНТЕНТ» в <script>. Ссылка на таблицу — CFG.sheetUrl. Ссылка на эфир — CFG.liveUrl. Цвета — :root в <style>. Файл должен называться index.html. -->
 <style>
-/* =====================================================
-   1. ПЕРЕМЕННЫЕ — меняйте цвета тут, они применятся везде
-   ===================================================== */
-:root{
-  --bg:#0a0a0f;            /* основной тёмный фон */
-  --panel:rgba(12,12,18,.72);/* полупрозрачные карточки */
-  --line:rgba(255,255,255,.14);/* тонкие рамки */
-  --text:#fff;
-  --muted:rgba(255,255,255,.65);
-  --accent:#ff3b2f;        /* красный цвет стоп-сигналов */
-  --accent2:#ff8a3d;       /* оранжевый цвет заката */
+:root{--bg:#0a0a0d;--panel:#121216;--panel2:#1a1a20;--line:#25252c;--red:#d0141c;--red2:#e5222a;--text:#f4f4f6;--muted:#9a9aa6;--green:#3fb765;--r:14px;--r2:10px;--pad:clamp(16px,3.4vw,96px);--fs-s:.875rem;--fs-l:1.125rem;color-scheme:dark;
+/* КУРСОР-КАМЕРА В СТИЛЕ САЙТА: точка клика — маленький «прицел» в левом верхнем углу, камера рядом справа внизу (не закрывает то, на что нажимаете).
+   --cur — обычный курсор, --cur-on — над кнопками и ссылками (камера ярче, вспышка с лучами).
+   Цвета: %23d0141c = #d0141c (красный), %23ff2a33 = #ff2a33 (яркий красный), %23ffffff = белый. Точка клика — два числа после картинки («6 6») */
+--cur:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='36' viewBox='0 0 42 36'%3E%3Ccircle cx='6' cy='6' r='3.6' fill='none' stroke='%23ffffff' stroke-width='3.4'/%3E%3Ccircle cx='6' cy='6' r='3.6' fill='none' stroke='%23d0141c' stroke-width='1.6'/%3E%3Ccircle cx='6' cy='6' r='1' fill='%23ffffff'/%3E%3Crect x='19' y='11' width='8' height='5' rx='1.4' fill='%23d0141c' stroke='%23ffffff' stroke-width='1.4'/%3E%3Crect x='13' y='14' width='25' height='18' rx='3.4' fill='%23d0141c' stroke='%23ffffff' stroke-width='1.5'/%3E%3Ccircle cx='25.5' cy='23' r='5.8' fill='%2315151a' stroke='%23ffffff' stroke-width='1.5'/%3E%3Ccircle cx='25.5' cy='23' r='2.4' fill='%23ff2a33'/%3E%3Ccircle cx='23.8' cy='21.3' r='.9' fill='%23ffffff'/%3E%3Ccircle cx='33.5' cy='18.2' r='1.3' fill='%23ffffff'/%3E%3C/svg%3E") 6 6, auto;
+--cur-on:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='46' height='40' viewBox='0 0 46 40'%3E%3Ccircle cx='6' cy='6' r='3.6' fill='%23ff2a33' stroke='%23ffffff' stroke-width='1.8'/%3E%3Ccircle cx='6' cy='6' r='1' fill='%23ffffff'/%3E%3Cpath d='M33 10.5l1.8-3.6M38.5 14l3.6-1.4M28 8.2l-.2-3.8' fill='none' stroke='%23ff2a33' stroke-width='1.8' stroke-linecap='round'/%3E%3Crect x='19' y='14' width='8' height='5' rx='1.4' fill='%23ff2a33' stroke='%23ffffff' stroke-width='1.4'/%3E%3Crect x='13' y='17' width='25' height='18' rx='3.4' fill='%23ff2a33' stroke='%23ffffff' stroke-width='1.6'/%3E%3Ccircle cx='25.5' cy='26' r='5.8' fill='%2315151a' stroke='%23ffffff' stroke-width='1.6'/%3E%3Ccircle cx='25.5' cy='26' r='2.6' fill='%23ffffff'/%3E%3Ccircle cx='33.5' cy='21.2' r='1.5' fill='%23ffffff'/%3E%3C/svg%3E") 6 6, pointer}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth;font-size:clamp(14px,calc(10px + .5vw),30px);-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font:1rem/1.6 'Onest',system-ui,sans-serif;-webkit-font-smoothing:antialiased;min-height:100dvh;overflow-x:hidden;display:flex;flex-direction:column}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:url(https://i.imgur.com/VL677mc.jpg) center/cover;opacity:.06}
+img{max-width:100%;display:block}a{color:inherit;text-decoration:none}button,input,select,textarea{font:inherit;color:inherit}
+/* КУРСОР: везде камера, над кликабельным — яркая камера со вспышкой, в полях ввода — текстовый */
+html,body,*{cursor:var(--cur)}
+a,a *,button,button *,select,label,summary,[role=button],[data-copy],[data-scroll],.opt,.opt *,.bbrow,.bbrow *,.pin,.arr,.chips button,.seg button{cursor:var(--cur-on)}
+input:not([type=checkbox]):not([type=radio]),textarea{cursor:text}
+.slider,.slider *,.slider.drag,.slider.drag *{cursor:var(--cur)}
+[hidden]{display:none!important}[id]{scroll-margin-top:5rem}
+:focus-visible{outline:2px solid var(--red2);outline-offset:3px}
+.wrap{width:100%;padding:0 var(--pad)}.cap{font-size:var(--fs-s);color:var(--muted)}
+main{flex:1}
+
+/* ШАПКА */
+.top{background:#0b0b0e;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:40}
+.top .wrap{display:flex;align-items:center;gap:1.6rem;height:4.2rem}
+.logo{display:flex;align-items:center;gap:.5rem;font:italic 800 1.9rem/1 'Onest',sans-serif;letter-spacing:-.04em;text-transform:uppercase}
+.logo b{background:var(--red);padding:.2rem .6rem .2rem .45rem;font-size:1.55rem;transform:skewX(-8deg);display:inline-block;border-radius:4px;color:#fff;text-shadow:0 0 .5rem #ffffffaa,0 0 1rem #ff2a33;box-shadow:0 0 .8rem #e5222a,0 0 2rem #e5222a88;animation:neon 1.4s ease-in-out infinite alternate}
+/* СВЕЧЕНИЕ «NEWS»: сила — значения в box-shadow; скорость — секунды в animation (2.8s) у .logo b */
+@keyframes neon{0%{box-shadow:0 0 .6rem #e5222acc,0 0 1.4rem #e5222a66}100%{box-shadow:0 0 1rem #ff2a33,0 0 2.6rem #e5222a99,0 0 4rem #e5222a44}}
+.slogan{font-size:.7rem;line-height:1.4;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;font-weight:500}
+nav{margin-left:auto;display:flex;gap:1.8rem;height:100%}
+nav a{display:flex;align-items:center;font-size:.95rem;font-weight:500;color:#cfcfd6;border-bottom:2px solid transparent;margin-top:2px;white-space:nowrap;transition:color .15s}
+nav a:hover,nav a.on{color:#fff}nav a.on{border-bottom-color:var(--red)}
+.live{display:flex;align-items:center;gap:.6rem;background:var(--red);padding:.6rem 1.2rem;border-radius:var(--r2);font-weight:600;font-size:.95rem}
+.live:hover{background:var(--red2)}.live i{width:.5rem;height:.5rem;border-radius:50%;background:#fff;animation:pl 1.5s infinite}
+/* Кнопка, когда эфира нет (серая, с жёлтым «предупреждающим» огоньком) */
+.live.off{background:var(--panel2);border:1px solid #3a3a44;color:#c5c5cd}
+.live.off:hover{background:#24242b;border-color:#5a5a66}
+.live.off i{background:#ffb020;animation:none}
+@keyframes pl{50%{opacity:.25}}
+
+/* БЕГУЩАЯ СТРОКА (скорость — секунды в animation у .tt) */
+.tick{background:#0d0d11;border-bottom:1px solid var(--line);font-size:.9rem}
+.tick .wrap{display:flex;align-items:center;gap:1rem;height:2.7rem}
+.tick em{font-style:normal;font-weight:700;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;background:var(--red);padding:.25rem .8rem;border-radius:6px;flex:none}
+.tv{overflow:hidden;flex:1;min-width:0;color:#c5c5cd}
+.tt{display:flex;width:max-content;animation:mq 50s linear infinite}.tv:hover .tt{animation-play-state:paused}
+.tt span{white-space:nowrap;padding-right:2.5rem}.tt span::after{content:"/";padding-left:2.5rem;color:var(--red)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* КНОПКИ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:2.9rem;padding:.6rem 1.4rem;background:var(--red);border:1px solid var(--red);border-radius:var(--r2);font-weight:600;transition:background .15s,border-color .15s}
+.btn:hover{background:var(--red2);border-color:var(--red2)}.btn:disabled{opacity:.6}
+.btn.ghost{background:transparent;border-color:#3a3a44}.btn.ghost:hover{background:#ffffff0d;border-color:#5a5a66}
+.btn.sm{min-height:2.4rem;padding:.35rem 1rem;font-size:.92rem}
+.acts{display:flex;gap:.7rem;flex-wrap:wrap}
+
+/* ГЛАВНАЯ */
+.hero{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.3fr);border-bottom:1px solid var(--line);min-height:clamp(360px,58vh,780px)}
+.hero-l{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:1.3rem;padding:clamp(2rem,4vw,4.5rem) var(--pad)}
+.hero h1{font-size:clamp(2rem,1.3rem + 2.2vw,3.5rem);line-height:1.08;font-weight:700;letter-spacing:-.035em}
+.hero .sub{color:var(--muted);font-size:var(--fs-l);max-width:46ch}
+.btns{display:flex;align-items:center;gap:1.4rem;flex-wrap:wrap}
+.lnk{font-weight:500;border-bottom:1px solid #fff8;padding-bottom:2px}.lnk:hover{color:var(--red2);border-color:var(--red2)}
+.hero-r{position:relative;overflow:hidden;background:#15151a}
+.hero-r img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.hero-r::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#000c 0,#0000 45%)}
+.badge{position:absolute;top:1.1rem;left:1.4rem;z-index:2;background:var(--red);font-size:.8rem;font-weight:700;padding:.35rem .8rem;border-radius:6px}
+.hero-cap{position:absolute;left:2rem;bottom:1.6rem;z-index:2}.hero-cap h3{font-size:1.4rem;font-weight:600}
+
+/* БЛОКИ И НОВОСТИ */
+.blk{padding:clamp(2rem,4vw,4rem) 0}
+.sh{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-bottom:1.5rem}
+.sh h2{font-size:clamp(1.4rem,1.1rem + .9vw,2rem);font-weight:700;letter-spacing:-.025em;line-height:1.2}.sh p{color:var(--muted);margin-top:.3rem}
+.grid{display:grid;gap:clamp(1rem,2vw,2.2rem);grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr))}
+.card{display:flex;flex-direction:column;gap:.5rem;min-width:0}
+.card .im{aspect-ratio:16/9;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.card .im img{width:100%;height:100%;object-fit:cover;transition:transform .5s}.card:hover .im img{transform:scale(1.04)}
+.tag{font-size:.85rem;font-weight:600;color:var(--red2);margin-top:.4rem}
+.card h3{font-size:1.2rem;font-weight:600;line-height:1.35}.card p{color:var(--muted)}
+
+/* ЛЕНТА НОВОСТЕЙ: стрелки полупрозрачные, стоят по бокам на самой ленте (листается мышью, пальцем, стрелками) */
+.sw{--cw:clamp(17rem,30vw,26rem);position:relative}
+.slider{display:flex;gap:clamp(1rem,2vw,2.2rem);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:.5rem;user-select:none;-webkit-user-select:none;overscroll-behavior-x:contain}
+.slider::-webkit-scrollbar{display:none}
+.slider .card{flex:0 0 var(--cw);scroll-snap-align:start}
+.slider img{-webkit-user-drag:none;user-drag:none;pointer-events:none}
+.slider.drag{scroll-snap-type:none;scroll-behavior:auto}
+.slider.drag a{pointer-events:none}
+.arr{position:absolute;top:calc(var(--cw) * 9 / 32);transform:translateY(-50%);z-index:5;width:3.2rem;height:3.2rem;display:grid;place-items:center;padding:0;background:rgba(10,10,13,.42);border:1px solid rgba(255,255,255,.2);border-radius:50%;color:#fff;font-size:1.4rem;line-height:1;-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);transition:background .18s,border-color .18s,opacity .18s,transform .18s}
+.arr.prev{left:.7rem}.arr.next{right:.7rem}
+.arr:hover{background:rgba(208,20,28,.78);border-color:rgba(255,255,255,.45);transform:translateY(-50%) scale(1.07)}
+.arr.off{opacity:0;pointer-events:none}
+.dt{font-size:.8rem;color:var(--muted);margin-top:-.1rem}
+.new{display:inline-block;background:var(--red);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.1rem .5rem;border-radius:5px;margin-left:.5rem;vertical-align:middle}
+
+/* ШАПКА ВНУТРЕННИХ СТРАНИЦ */
+.pghead{background:#0d0d11;border-bottom:1px solid var(--line)}
+.pghead .wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:2rem clamp(2rem,5vw,6rem);align-items:center;padding-top:clamp(2rem,4vw,3.5rem);padding-bottom:clamp(2rem,4vw,3.5rem)}
+.pghead h1{font-size:clamp(1.85rem,1.2rem + 1.6vw,2.75rem);line-height:1.12;font-weight:700;letter-spacing:-.03em}
+.pghead .lead{color:var(--muted);font-size:var(--fs-l);max-width:58ch;margin-top:1rem}.pghead .acts{margin-top:1.5rem}
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+.facts>div{padding:1.1rem 1.2rem;border-right:1px solid var(--line);display:flex;flex-direction:column}.facts>div:last-child{border:0}
+.facts b{font-size:2rem;line-height:1.15;font-weight:700}.facts span{color:var(--muted);font-size:var(--fs-s)}
+.facts .g{color:var(--green)}.facts .r{color:var(--red2)}
+
+/* ПЛАШКА-ПРИЗЫВ (прозрачная) */
+.help{display:flex;justify-content:space-between;align-items:center;gap:1.2rem;flex-wrap:wrap;margin-top:clamp(1.5rem,3vw,3rem);padding:1.4rem;background:transparent;border:0;border-radius:var(--r)}
+.help h3{font-size:1.2rem;font-weight:600}.help p{color:var(--muted)}
+
+/* БИЛБОРДЫ */
+.tools{display:flex;gap:.8rem 1rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem}
+.seg{display:inline-flex;gap:.25rem;padding:.25rem;background:var(--panel);border:1px solid var(--line);border-radius:var(--r2);flex-wrap:wrap}
+.seg button{background:none;border:0;border-radius:7px;padding:.4rem .95rem;min-height:2.3rem;font-size:.92rem;font-weight:500;color:var(--muted)}
+.seg button span{opacity:.7;margin-left:.2rem}.seg button[aria-pressed=true]{background:var(--red);color:#fff}
+.search{flex:1;min-width:12rem;max-width:26rem;min-height:2.9rem;padding:.5rem .9rem;background:var(--panel);border:1px solid var(--line);border-radius:var(--r2)}
+.bbgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(1rem,2.4vw,2.5rem);align-items:start}
+.bblist{display:flex;flex-direction:column;gap:.5rem}
+.bbrow{display:grid;grid-template-columns:2.6rem minmax(0,1fr) auto;gap:.9rem;align-items:center;width:100%;text-align:left;padding:.75rem 1rem;background:var(--panel);border:1px solid var(--line);border-radius:var(--r2);transition:border-color .15s}
+.bbrow:hover{border-color:#44444f}.bbrow[aria-pressed=true]{border-color:var(--red2);background:#d0141c14}
+.bbn{width:2.6rem;height:2.6rem;display:grid;place-items:center;background:var(--panel2);border-radius:8px;font-weight:700}
+.bbrow b{display:block;font-weight:600}.bbrow small{color:var(--muted);font-size:var(--fs-s)}
+.st{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;font-weight:600;padding:.25rem .75rem;border-radius:999px;background:#3fb76526;color:#6fd68c;white-space:nowrap;width:fit-content}
+.st::before{content:"";width:.45rem;height:.45rem;border-radius:50%;background:currentColor}.st.busy{background:#e5222a26;color:#ff7b80}
+.bbside{position:sticky;top:5.4rem;display:flex;flex-direction:column;gap:.8rem}
+/* КАРТА (прозрачная: без фона, рамки и скругления) */
+.map{position:relative;border:0;border-radius:0;background:transparent;user-select:none;scroll-margin-top:5rem}
+.map>img{width:100%;height:auto;border-radius:0}.mapempty{aspect-ratio:16/9;display:grid;place-items:center;color:var(--muted);text-align:center;padding:1rem}
+.pins{position:absolute;inset:0;pointer-events:none}
+/* РАЗМЕР ТОЧЕК: width/height — диаметр, font-size — цифра внутри, border — рамка */
+.pin{position:absolute;pointer-events:auto;transform:translate(-50%,-50%);width:max(.95rem,13px);height:max(.95rem,13px);border-radius:50%;border:1px solid #fff;color:#fff;font-size:.5rem;line-height:1;font-weight:700;display:grid;place-items:center;padding:0;box-shadow:0 2px 6px #000a;transition:transform .15s,box-shadow .15s}
+.pin.free{background:#2f9e4a}.pin.busy{background:#c0392b}.pin.on{transform:translate(-50%,-50%) scale(1.5);z-index:3;box-shadow:0 0 0 3px #fff6}
+.hintcap{text-align:center}
+
+/* ВСПЛЫВАЮЩАЯ КАРТОЧКА У ТОЧКИ */
+.tip{position:absolute;z-index:6;width:17rem;max-width:100%;display:flex;flex-direction:column;gap:.55rem;align-items:flex-start;padding:1rem;background:#16161bf5;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid #3a3a44;border-radius:var(--r);box-shadow:0 12px 36px #000b;opacity:0;visibility:hidden;transform:translateY(6px) scale(.97);transition:opacity .16s,transform .16s,visibility .16s;pointer-events:none}
+.tip.show{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.tip h3{font-size:1rem;font-weight:600;line-height:1.35}.tip p{color:var(--muted);font-size:.92rem;line-height:1.5}
+
+.empty{padding:2rem 1rem;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r2)}
+.cal{border:1px dashed var(--red);border-radius:var(--r2);padding:.9rem;font-size:.9rem;display:flex;flex-direction:column;gap:.6rem;background:#d0141c14}
+.cal select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:.4rem}
+
+/* КОНТАКТЫ */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:1rem}
+.cc{display:flex;flex-direction:column;gap:.3rem;padding:1.3rem;background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.cc .k{color:var(--muted);font-size:var(--fs-s)}.cc .v{font-size:var(--fs-l);font-weight:600;overflow-wrap:anywhere}.cc .acts{margin-top:auto;padding-top:.8rem}
+.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,26rem),1fr));gap:1rem}
+.tp{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:1.2rem;padding:1.4rem;background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.av{width:5.5rem;height:5.5rem;border-radius:var(--r);background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;font-size:1.7rem;font-weight:700;color:var(--red2);overflow:hidden}.av img{width:100%;height:100%;object-fit:cover}
+.tb{display:flex;flex-direction:column;gap:.4rem;align-items:flex-start}
+.role{color:var(--red2);font-size:.9rem;font-weight:600}.tb h3{font-size:1.25rem;font-weight:700;letter-spacing:-.015em;line-height:1.2}.tb p{color:var(--muted)}.tb .acts{margin-top:.6rem}
+
+/* ЦЕНЫ */
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+.chips button{min-height:2.5rem;padding:.4rem 1.1rem;background:var(--panel);border:1px solid var(--line);border-radius:999px;font-size:.92rem;font-weight:500;color:var(--muted)}
+.chips button:hover{border-color:#44444f}.chips button[aria-pressed=true]{background:var(--red);border-color:var(--red);color:#fff}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1rem;align-items:start}
+.pgrid.one{grid-template-columns:minmax(0,40rem)}
+/* КАРТОЧКИ ЦЕН (прозрачные) */
+.pc{padding:1.4rem 1.4rem .8rem;background:transparent;border:0;border-radius:var(--r)}
+.pc header{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-bottom:.9rem;border-bottom:2px solid var(--red)}
+.pc h2{font-size:1.25rem;font-weight:700;letter-spacing:-.015em}
+.pr{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--line)}
+.pr b{white-space:nowrap;font-weight:700}.pr small{font-weight:500;color:var(--muted);font-size:.85em}
+.pnote{color:var(--muted);font-size:var(--fs-s);padding:.6rem 0}
+
+/* ФОРМА ЗАПИСИ (прозрачная) */
+.book{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:clamp(1.2rem,3vw,3rem);margin-top:clamp(1.5rem,3vw,3rem);padding:clamp(1.2rem,2.4vw,2rem);background:transparent;border:0;border-radius:var(--r)}
+.book h2{font-size:clamp(1.4rem,1.1rem + .9vw,2rem);font-weight:700;letter-spacing:-.025em;line-height:1.2}.book .intro p{color:var(--muted);margin-top:.6rem;max-width:40ch}
+.form{display:flex;flex-direction:column;gap:1.2rem}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.fld{display:flex;flex-direction:column;gap:.4rem;min-width:0;border:0;padding:0}
+.fld>label,.fld>legend{font-size:var(--fs-s);font-weight:600;padding:0}
+.inp{width:100%;min-height:2.9rem;padding:.55rem .9rem;background:transparent;border:1px solid var(--line);border-radius:var(--r2)}
+textarea.inp{min-height:6.5rem;resize:vertical}.inp:focus{border-color:var(--red2);outline:0}
+.sg{font-size:var(--fs-s);color:var(--muted);margin:.6rem 0 .4rem}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(14rem,1fr));gap:.5rem}
+.opt{display:flex;align-items:center;gap:.7rem;padding:.55rem .8rem;border:1px solid var(--line);border-radius:var(--r2);background:transparent;font-size:.95rem;line-height:1.35}
+.opt:hover{border-color:#44444f}.opt:has(input:checked){border-color:var(--red2);background:#d0141c14}
+.opt input{accent-color:var(--red2);width:1.1rem;height:1.1rem;flex:none}.opt small{margin-left:auto;color:var(--muted);white-space:nowrap;padding-left:.4rem}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.fmsg{font-size:.92rem;color:var(--muted)}.fmsg.err{color:#ff7b80}
+.done{display:flex;flex-direction:column;gap:.8rem;align-items:flex-start;padding:1.4rem;border:1px solid #3fb76566;background:#3fb76514;border-radius:var(--r)}.done h3{font-size:1.2rem}.done p{color:var(--muted)}
+
+footer{border-top:1px solid var(--line);margin-top:1rem;background:#0b0b0e}
+footer .wrap{display:flex;align-items:center;gap:1.4rem;min-height:5rem;flex-wrap:wrap;padding-top:1rem;padding-bottom:1rem}
+footer .logo{font-size:1.3rem}footer .logo b{font-size:1.05rem}footer small{font-size:.8rem;color:var(--muted)}
+footer nav{height:auto;gap:1.2rem}footer nav a{font-size:.875rem;border:0;margin:0;color:#c5c5cd}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#fff;color:#000;padding:.6rem 1rem;border-radius:var(--r2);font-size:.9rem;z-index:99}
+
+@media(max-width:960px){
+ .slogan{display:none}
+ .top .wrap{flex-wrap:wrap;height:auto;padding-top:.7rem;padding-bottom:.4rem;gap:.6rem 1rem}
+ nav{order:3;width:100%;margin:0;overflow-x:auto;gap:1.5rem;height:2.7rem}
+ .live{margin-left:auto;padding:.5rem 1rem}
+ .hero,.pghead .wrap,.bbgrid,.book{grid-template-columns:1fr}
+ .hero-r{min-height:18rem}
+ .bbside{position:static;order:-1}
 }
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer}
-
-/* =====================================================
-   2. ШАПКА (меню сверху)
-   ===================================================== */
-header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;
-  justify-content:space-between;padding:22px 64px;transition:.3s}
-/* Шапка ПРОЗРАЧНАЯ всегда (без тёмной полосы). Лёгкая тень сверху нужна только для читаемости текста */
-header{background:linear-gradient(180deg,rgba(0,0,0,.45),transparent)}
-header.scrolled{background:linear-gradient(180deg,rgba(0,0,0,.35),transparent);padding:14px 64px}
-.logo{font-weight:900;font-style:italic;font-size:30px;letter-spacing:-1px}
-.logo span{font-size:15px;margin-left:4px;font-weight:800}
-nav{display:flex;gap:40px}
-nav a{font-size:13px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;padding:8px 0;
-  border-bottom:1px solid transparent;transition:.25s}
-nav a:hover,nav a.active{border-color:#fff}
-.head-right{display:flex;align-items:center;gap:16px}
-.btn-outline{border:1px solid var(--line);padding:13px 22px;font-size:12px;font-weight:600;
-  text-transform:uppercase;background:rgba(0,0,0,.25);transition:.25s}
-.btn-outline:hover{background:#fff;color:#000}
-
-/* =====================================================
-   3. ГЛАВНЫЙ ЭКРАН (hero)
-   ===================================================== */
-.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;
-  padding:120px 64px 200px;overflow:hidden}
-/* ФОН: положите свою картинку рядом с index.html под именем hero.jpg.
-   Если картинки нет — будет красивый градиент заката. */
-.hero-bg{position:absolute;inset:0;z-index:-2;
-  background:
-    linear-gradient(90deg,rgba(5,5,10,.9) 0%,rgba(5,5,10,.35) 55%,rgba(5,5,10,.1) 100%),
-    url('hero.jpg') center/cover no-repeat,
-    linear-gradient(180deg,#1b1233 0%,#7a2a55 35%,#ff6b3d 60%,#1a0c12 100%);
-  animation:zoom 22s ease-in-out infinite alternate}
-@keyframes zoom{from{transform:scale(1)}to{transform:scale(1.08)}}
-.hero::after{content:"";position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(0deg,var(--bg) 0%,transparent 35%)}
-
-.eyebrow{font-style:italic;letter-spacing:6px;font-size:14px;color:var(--muted);text-transform:uppercase;margin-bottom:18px}
-h1{font-weight:900;font-style:italic;text-transform:uppercase;line-height:.92;
-  font-size:clamp(48px,8vw,118px);letter-spacing:-2px}
-h1 .outline{color:transparent;-webkit-text-stroke:2px #fff}   /* третье слово — контурное */
-.hero p.desc{max-width:430px;margin:30px 0 34px;line-height:1.6;color:#e8e8ee;font-size:15px}
-.hero-btns{display:flex;align-items:center;gap:26px}
-.btn-white{background:#fff;color:#000;padding:18px 36px;font-weight:700;font-size:13px;
-  text-transform:uppercase;border:none;transition:.25s}
-.btn-white:hover{background:var(--accent);color:#fff;transform:translateY(-2px)}
-.trailer{display:flex;align-items:center;gap:14px;background:none;border:none;color:#fff;
-  font-size:12px;font-weight:700;text-transform:uppercase}
-.trailer i{width:50px;height:50px;border:1px solid var(--line);border-radius:50%;display:grid;
-  place-items:center;font-style:normal;transition:.25s}
-.trailer:hover i{background:var(--accent);border-color:var(--accent)}
-
-/* вертикальный счётчик справа */
-.side-count{position:absolute;right:32px;top:50%;transform:translateY(-50%);display:flex;
-  flex-direction:column;align-items:center;gap:18px;font-size:11px;letter-spacing:3px}
-.side-count b{writing-mode:vertical-rl;font-weight:500}
-.side-count em{width:1px;height:110px;background:var(--line)}
-
-/* =====================================================
-   4. БЛИЖАЙШИЕ СОБЫТИЯ (карточки внизу hero) + ПОГОДА
-   ===================================================== */
-.events{position:absolute;left:290px;bottom:48px;display:flex;gap:20px;z-index:3}
-.ev{width:310px;height:140px;position:relative;border:1px solid var(--line);overflow:hidden;
-  background:var(--panel);transition:.3s;display:flex;align-items:flex-end}
-.ev:hover{transform:translateY(-6px);border-color:var(--accent)}
-.ev .pic{position:absolute;inset:0;opacity:.75;transition:.4s}
-.ev:hover .pic{transform:scale(1.07)}
-/* Картинки событий — просто градиенты; замените на url('...') если хотите фото */
-.ev:nth-child(1) url(`https://imgur.com/9VjXr9l.jpg`)
-.ev:nth-child(2) .pic{background:linear-gradient(135deg,#1c1c2b,#6b3a8a)}
-.ev:nth-child(3) .pic{background:linear-gradient(135deg,#ff9a3d,#7a2a55)}
-.ev .shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.9),transparent 70%)}
-.ev .date{position:absolute;top:12px;left:14px;font-size:11px;font-weight:700;line-height:1.2}
-.ev .date b{display:block;font-size:19px}
-.ev .info{position:relative;padding:14px;width:100%}
-.ev h4{font-size:16px;font-weight:600}
-.ev small{color:var(--muted);font-size:12px}
-.ev .arr{position:absolute;right:14px;bottom:14px;font-size:20px}
-
-.weather{position:absolute;left:64px;bottom:60px;z-index:3;display:flex;align-items:center;gap:12px;font-size:12px}
-.weather .sun{font-size:26px;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.08);display:grid;place-items:center}
-.weather b{display:block;font-size:15px}
-
-/* =====================================================
-   5. СЕКЦИЯ «КАРТЫ ГОНОК» — 4 ВКЛАДКИ
-   ===================================================== */
-section.maps{padding:120px 64px;position:relative}
-section.maps::before{content:"";position:absolute;inset:0;z-index:-1;
-  background:radial-gradient(900px 400px at 85% 0%,rgba(255,59,47,.14),transparent),
-             radial-gradient(700px 400px at 0% 100%,rgba(255,138,61,.1),transparent)}
-.sec-title{font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(34px,5vw,64px);letter-spacing:-1px}
-.sec-sub{color:var(--muted);margin:12px 0 44px;max-width:560px;line-height:1.6}
-
-/* кнопки-вкладки */
-/* Линия под вкладками убрана — панель вкладок полностью прозрачная */
-.tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px;background:transparent;border:none}
-.tab{background:none;border:none;color:var(--muted);padding:16px 26px;font-size:13px;font-weight:600;
-  text-transform:uppercase;letter-spacing:1px;position:relative;transition:.25s}
-.tab:hover{color:#fff}
-.tab.active{color:#fff}
-.tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.tab sup{color:var(--accent);margin-left:4px;font-size:10px}
-
-/* ---------- БАННЕР вкладки (картинка в стиле главного экрана) ----------
-   Рисуется кодом (закат + город + машина). Свою фотку можно подставить
-   через поле banner:'maps/banner-street.jpg' в списке CATEGORIES */
-.banner{position:relative;height:340px;margin-bottom:34px;border:1px solid var(--line);overflow:hidden;
-  background-size:cover;background-position:center;animation:rise .6s forwards}
-.banner svg{position:absolute;inset:0;width:100%;height:100%}
-.banner::after{content:"";position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(5,5,10,.85) 0%,rgba(5,5,10,.2) 60%,transparent 100%),
-             linear-gradient(0deg,rgba(10,10,15,.8),transparent 45%)}
-.banner .txt{position:absolute;z-index:2;left:40px;bottom:34px;max-width:480px}
-.banner .txt small{font-style:italic;letter-spacing:5px;font-size:12px;color:var(--muted);text-transform:uppercase}
-.banner .txt h3{font-weight:900;font-style:italic;text-transform:uppercase;font-size:clamp(30px,4.5vw,56px);
-  line-height:.95;letter-spacing:-1px;margin:8px 0 10px}
-.banner .txt p{color:#e8e8ee;font-size:14px;line-height:1.55}
-
-/* ---------- ЛОГИСТИКА ---------- */
-.logi{margin-top:70px}
-.logi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px;margin-top:30px}
-.lcard{background:var(--panel);border:1px solid var(--line);padding:28px;position:relative;
-  transition:.3s;backdrop-filter:blur(6px);overflow:hidden}
-.lcard:hover{border-color:var(--accent);transform:translateY(-6px);box-shadow:0 0 40px rgba(255,59,47,.2)}
-.lcard .ico{font-size:30px;margin-bottom:16px}
-.lcard h4{font-size:18px;font-weight:800;font-style:italic;text-transform:uppercase;margin-bottom:10px}
-.lcard p{color:var(--muted);font-size:14px;line-height:1.6}
-.lcard .price{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:12px;
-  text-transform:uppercase;letter-spacing:1px;color:var(--accent2);font-weight:700}
-.lcard::before{content:attr(data-n);position:absolute;right:16px;top:6px;font-size:64px;font-weight:900;
-  font-style:italic;color:rgba(255,255,255,.05)}
-.route{display:flex;align-items:center;gap:0;margin-top:36px;flex-wrap:wrap}
-.route .st{padding:14px 22px;border:1px solid var(--line);background:var(--panel);font-size:12px;
-  font-weight:700;text-transform:uppercase;letter-spacing:1px}
-.route .ln{flex:1;min-width:26px;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-
-/* сетка карточек карт */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:26px}
-.card{position:relative;aspect-ratio:16/11;border:1px solid var(--line);overflow:hidden;
-  background:#14141c;cursor:pointer;opacity:0;transform:translateY(24px);
-  animation:rise .6s forwards;transition:border-color .3s,box-shadow .3s}
-@keyframes rise{to{opacity:1;transform:none}}
-.card:hover{border-color:var(--accent);box-shadow:0 0 40px rgba(255,59,47,.25)}
-.card img{width:100%;height:100%;object-fit:cover;transition:.5s}
-.card:hover img{transform:scale(1.08)}
-/* заглушка, пока вы не загрузили карту */
-.card .ph{position:absolute;inset:0;display:grid;place-items:center;color:rgba(255,255,255,.35);
-  font-size:12px;letter-spacing:3px;text-transform:uppercase;
-  background:repeating-linear-gradient(45deg,#14141c 0 14px,#191923 14px 28px)}
-.card .shade{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.92) 0%,transparent 60%)}
-.card .meta{position:absolute;left:0;right:0;bottom:0;padding:20px}
-.card h3{font-size:20px;font-weight:800;font-style:italic;text-transform:uppercase}
-.card .stats{display:flex;gap:16px;margin-top:8px;font-size:12px;color:var(--muted)}
-.card .stats b{color:#fff}
-.badge{position:absolute;top:14px;right:14px;padding:6px 12px;font-size:10px;font-weight:700;
-  text-transform:uppercase;letter-spacing:1px;background:var(--accent);color:#fff}
-.badge.mid{background:var(--accent2);color:#000}
-.badge.easy{background:#2fd47a;color:#000}
-
-/* =====================================================
-   6. ОКНО ПРОСМОТРА КАРТЫ (lightbox)
-   ===================================================== */
-.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.9);backdrop-filter:blur(8px);
-  display:none;align-items:center;justify-content:center;padding:40px}
-.modal.open{display:flex}
-.modal-box{max-width:1100px;width:100%;border:1px solid var(--line);background:#0e0e15;position:relative}
-.modal-box img{width:100%;max-height:70vh;object-fit:contain;background:#000;display:block}
-.modal-info{padding:22px 28px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
-.modal-info h3{font-size:24px;font-weight:900;font-style:italic;text-transform:uppercase}
-.modal-info p{color:var(--muted);font-size:14px;margin-top:4px}
-.close{position:absolute;top:-18px;right:-18px;width:42px;height:42px;border-radius:50%;border:none;
-  background:var(--accent);color:#fff;font-size:20px}
-
-/* =====================================================
-   7. ПОДВАЛ
-   ===================================================== */
-footer{padding:50px 64px;border-top:1px solid var(--line);display:flex;justify-content:space-between;
-  flex-wrap:wrap;gap:20px;color:var(--muted);font-size:13px}
-
-/* =====================================================
-   8. АДАПТИВ — телефоны и планшеты
-   ===================================================== */
-@media(max-width:1100px){
-  .events{position:static;margin-top:50px;flex-wrap:wrap}
-  .weather{display:none}
-  .side-count{display:none}
-  .hero{padding-bottom:80px}
-}
-@media(max-width:800px){
-  header,header.scrolled{padding:14px 20px}
-  nav{display:none}
-  .btn-outline{display:none}
-  .hero,section.maps{padding-left:20px;padding-right:20px}
-  .ev{width:100%}
-  footer{padding:40px 20px}
-}
+@media(max-width:640px){.tp{grid-template-columns:4.5rem 1fr}.av{width:4.5rem;height:4.5rem}.sh{flex-direction:column;align-items:flex-start}.search{max-width:none}.fgrid{grid-template-columns:1fr}.sw{--cw:calc((100vw - 2 * var(--pad)) * .82)}.arr{width:2.7rem;height:2.7rem;font-size:1.2rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-
-<!-- ============ ШАПКА ============ -->
-<header id="top">
-  <div class="logo">LS<span>RACING</span></div>
-  <!-- Ссылки ведут на блоки страницы по id -->
-  <nav>
-    <a href="#home" class="active">Главная</a>
-    <a href="#events">События</a>
-    <a href="#maps">Карты</a>
-    <a href="#community">Сообщество</a>
-    <a href="#about">О нас</a>
-  </nav>
-  <div class="head-right">
-    <!-- ПОДСКАЗКА: вместо # вставьте свою ссылку на сервер / Discord -->
-    <a class="btn-outline" href="#">Войти на сервер →</a>
-  </div>
-</header>
-
-<!-- ============ ГЛАВНЫЙ ЭКРАН ============ -->
-<section class="hero" id="home">
-  <div class="hero-bg"></div>
-
-  <div class="eyebrow">Гоночное сообщество Лос-Сантоса</div>
-  <h1>Гоняй<br>Исследуй<br><span class="outline">Объединяйся</span></h1>
-  <p class="desc">
-    Присоединяйся к главному гоночному сообществу.
-    Кастомные трассы, стрит-мииты, автокультура и многое другое.
-    Добро пожаловать в Лос-Сантос.
-  </p>
-  <div class="hero-btns">
-    <!-- ПОДСКАЗКА: ссылка на Discord/сервер -->
-    <a class="btn-white" href="#">Вступить →</a>
-    <button class="trailer"><i>▶</i> Смотреть трейлер</button>
-  </div>
-
-  <div class="side-count"><b>ЛОС-САНТОС</b><em></em><b>01 / 04</b></div>
-
-  <div class="weather">
-    <div class="sun">☀</div>
-    <div><b>Лос-Сантос</b>24°C &nbsp; Ясно</div>
-  </div>
-
-  <!-- Карточки событий. Меняйте даты, названия и места прямо в тексте -->
-  <div class="events" id="events">
-    <a class="ev" href="#maps"><div class="pic"></div><div class="shade"></div>
-      <div class="date">ОКТ<b>26</b></div>
-      <div class="info"><h4>Стрит-миит</h4><small>Бульвар Vinewood</small></div><span class="arr">→</span></a>
-    <a class="ev" href="#maps"><div class="pic"></div><div class="shade"></div>
-      <div class="date">ОКТ<b>27</b></div>
-      <div class="info"><h4>Тайм-атака</h4><small>Международный аэропорт</small></div><span class="arr">→</span></a>
-    <a class="ev" href="#maps"><div class="pic"></div><div class="shade"></div>
-      <div class="date">ОКТ<b>29</b></div>
-      <div class="info"><h4>Дрифт-ивент</h4><small>Сэнди-Шорс</small></div><span class="arr">→</span></a>
-  </div>
-</section>
-
-<!-- ============ КАРТЫ ГОНОК (4 ВКЛАДКИ) ============ -->
-<section class="maps" id="maps">
-  <h2 class="sec-title">Карты гонок</h2>
-  <p class="sec-sub">Выбирай категорию, изучай маршрут и готовься к старту. Нажми на карту, чтобы открыть её на весь экран.</p>
-
-  <!-- Кнопки вкладок создаются автоматически из списка CATEGORIES ниже -->
-  <div class="tabs" id="tabs"></div>
-  <div id="bannerBox"></div>   <!-- сюда JS вставляет баннер выбранной вкладки -->
-  <div class="grid" id="grid"></div>
-  <div id="logiBox"></div>     <!-- сюда JS вставляет блок «Логистика» (только в последней вкладке) -->
-</section>
-
-<!-- ============ СООБЩЕСТВО / О НАС ============ -->
-<section class="maps" id="community" style="padding-top:40px">
-  <h2 class="sec-title">Сообщество</h2>
-  <p class="sec-sub">Тысячи гонщиков, еженедельные заезды и свой Discord. Напишите здесь о правилах, ссылках и контактах.</p>
-</section>
-<section class="maps" id="about" style="padding-top:40px">
-  <h2 class="sec-title">О нас</h2>
-  <p class="sec-sub">Расскажите историю вашего клуба: когда создан, чем занимаетесь, кого ищете.</p>
-</section>
-
-<footer>
-  <div>© 2026 LS Racing. Неофициальное фан-сообщество.</div>
-  <div>Discord · YouTube · Telegram</div>
-</footer>
-
-<!-- ============ ОКНО ПРОСМОТРА КАРТЫ ============ -->
-<div class="modal" id="modal">
-  <div class="modal-box">
-    <button class="close" id="close">✕</button>
-    <img id="mImg" alt="">
-    <div class="modal-info">
-      <div><h3 id="mTitle"></h3><p id="mDesc"></p></div>
-      <a class="btn-white" href="#">Участвовать →</a>
-    </div>
-  </div>
-</div>
+<header class="top"><div class="wrap">
+  <a class="logo" href="#/home" aria-label="Weazel News">Weazel <b>News</b></a>
+  <span class="slogan">Правда<br>движет<br>Лос-Сантосом</span>
+  <nav id="nav" aria-label="Страницы"></nav>
+  <a class="live" id="live" href="#/contacts"><i></i>Прямой эфир</a>
+</div></header>
+<div class="tick"><div class="wrap">
+  <em>Срочно</em><div class="tv"><div class="tt" id="tt"></div></div>
+</div></div>
+<main id="app"></main>
+<footer><div class="wrap">
+  <a class="logo" href="#/home">Weazel <b>News</b></a><small id="copy"></small>
+  <nav id="fnav" style="margin-left:auto"></nav><small id="mail"></small>
+</div></footer>
 
 <script>
-/* =====================================================
-   КАК ДОБАВИТЬ СВОИ КАРТЫ  (самое главное!)
-   -----------------------------------------------------
-   1. Создайте папку  maps  рядом с index.html
-   2. Положите туда картинки (jpg / png / webp)
-   3. Впишите их в списки ниже:
-        img   — путь к картинке, например 'maps/street1.jpg'
-        title — название трассы
-        dist  — длина
-        laps  — круги
-        level — сложность: 'easy' | 'mid' | 'hard'
-   Пока картинки нет — показывается серая заглушка.
-   ===================================================== */
-const CATEGORIES = [
-  {
-    id:'street', name:'Уличные гонки',
-    // banner: 'maps/banner-street.jpg',   // ← раскомментируйте и вставьте свою фотку вместо нарисованной
-    sky:['#1b1233','#7a2a55','#ff6b3d'], title:'Улицы Лос-Сантоса', text:'Ночные заезды через центр, тоннели и холмы города.',
-    maps:[
-      {img:'maps/street1.jpg', title:'Даунтаун Спринт',   dist:'8.4 км',  laps:1, level:'mid',  desc:'Через центр города и тоннели.'},
-      {img:'maps/street2.jpg', title:'Вайнвуд Ран',       dist:'12 км',   laps:1, level:'hard', desc:'Серпантин холмов Вайнвуда.'},
-      {img:'maps/street3.jpg', title:'Вайнвуд Бульвар',   dist:'5.2 км',  laps:3, level:'easy', desc:'Короткий круг для новичков.'}
-    ]
-  },
-  {
-    id:'circuit', name:'Кольцевые трассы',
-    // banner: 'maps/banner-circuit.jpg',
-    sky:['#08122b','#1d4a7a','#f08a5d'], title:'Кольцо и скорость', text:'Тайм-атаки и групповые заезды на закрытых трассах.',
-    maps:[
-      {img:'maps/circuit1.jpg', title:'Аэропорт LS',    dist:'4.1 км', laps:5, level:'mid',  desc:'Скоростное кольцо у взлётной полосы.'},
-      {img:'maps/circuit2.jpg', title:'Порт Эльбрус',   dist:'3.6 км', laps:6, level:'hard', desc:'Узкие повороты между контейнерами.'}
-    ]
-  },
-  {
-    id:'drift', name:'Дрифт',
-    // banner: 'maps/banner-drift.jpg',
-    sky:['#2a0f1f','#c0392b','#ffb347'], title:'Король заноса', text:'Виражи, шпильки и дым из-под колёс на закате.',
-    maps:[
-      {img:'maps/drift1.jpg', title:'Сэнди-Шорс',  dist:'2.8 км', laps:4, level:'mid',  desc:'Пустынные виражи на закате.'},
-      {img:'maps/drift2.jpg', title:'Гора Чилиад', dist:'6.5 км', laps:1, level:'hard', desc:'Горный спуск с крутыми шпильками.'}
-    ]
-  },
-  {
-    id:'offroad', name:'Бездорожье и логистика',
-    // banner: 'maps/banner-offroad.jpg',
-    sky:['#0f1a14','#5a3a1f','#ffa24d'], title:'Бездорожье и логистика', text:'Покорение пустынь и каньонов плюс всё о перевозках для нашего клуба.',
-    logistics:true,   // ← этот флаг включает блок «Логистика» под картами. Уберите строку, чтобы скрыть
-    maps:[
-      {img:'maps/off1.jpg', title:'Каньон Рейс',   dist:'9.7 км', laps:1, level:'hard', desc:'Грязь, камни и прыжки.'},
-      {img:'maps/off2.jpg', title:'Пустыня Гранд', dist:'7.3 км', laps:2, level:'mid',  desc:'Песчаные дюны и ночные заезды.'}
-    ]
-  }
+/* =====================  НАСТРОЙКИ И КОНТЕНТ — правьте здесь  =====================
+   Текст пишите внутри кавычек '...'. Если нужна кавычка ' — ставьте перед ней \ . Запятые между пунктами не удаляйте. */
+const IMG = id => 'https://i.imgur.com/' + id + '.jpg';
+const CFG = {
+  email: 'mercantile1038@gmail.com',
+  address: 'Little Seoul, 8144',
+  copy: '© 2026 Weazel News. Все права защищены.',
+
+  /* ПРЯМОЙ ЭФИР.
+     Идёт эфир  → вставьте ссылку между кавычками, например: liveUrl: 'https://www.twitch.tv/ваш_канал',
+                  кнопка станет красной «Прямой эфир» и откроет ссылку в новой вкладке.
+     Эфира нет  → оставьте пустые кавычки: liveUrl: '' — кнопка станет серой с надписью из liveOffText,
+                  а при нажатии появится сообщение liveOffMsg. */
+  liveUrl: '',
+  liveOnText: 'Прямой эфир',                                             // надпись на кнопке, когда эфир идёт
+  liveOffText: 'Эфира нет',                                              // надпись на кнопке, когда эфира нет
+  liveOffMsg: 'Прямого эфира сейчас нет. Загляните позже — мы сообщим о начале!',   // сообщение при нажатии
+
+  heroImg: IMG('i2kWNP9'),     // картинка на главной
+  mapImg: IMG('PF1WkWe'),      // карта города для билбордов
+
+  /* >>> СЮДА ВСТАВЬТЕ ССЫЛКУ ДЛЯ ТАБЛИЦЫ <<<
+     Это ссылка веб-приложения Apps Script (заканчивается на /exec), а не обычная ссылка на таблицу.
+     Как получить: Таблица → Расширения → Apps Script → вставить скрипт → Развернуть → Веб-приложение (доступ: все). */
+  sheetUrl: 'https://script.google.com/macros/s/AKfycbzod7RjCq0EuvqMcNWt3nSeeeLhx8pXmHonnr80BSibkBxxBufH2LKkP2-6q3TNI_HfoQ/exec',
+};
+/* ТОЧКИ НА КАРТЕ: номер: [слева %, сверху %]. Режим разметки: открыть сайт с ?calibrate в конце адреса */
+const BB_POS = { 1:[38.4,29.1], 2:[52.0,41.7], 3:[14.5,33.2], 4:[32.0,41.7], 5:[42.0,41.7], 6:[52.0,41.7], 7:[52.0,41.7], 8:[22.0,41.7], 9:[12.0,41.7], 10:[72.0,41.7], 11:[82.0,41.7], 12:[92.0,41.7], 13:[52.0,11.7], 14:[52.0,21.7], 15:[52.0,31.7], 16:[52.0,51.7], 17:[52.0,61.7], 18:[52.0,71.7], 19:[52.0,81.7] };
+/* НОВОСТИ (главная + бегущая строка): date — дата ГГГГ-ММ-ДД, tag — метка, title — заголовок, text — описание, img — картинка.
+   Порядок в списке не важен: новости сортируются по дате сами — самые новые стоят первыми, старые уходят вправо.
+   Новая новость: добавьте блок { date:'2026-10-11', ... } — она окажется в начале ленты. */
+const NEWS = [
+  { date:'2026-10-11', tag:'Новости', title:'Главные события дня', img:IMG('QbtGLMP'),
+    text:'В баре Tequi-la-la развивается напряжённая ситуация — по предварительной информации, внутри здания происходит захват заложников. Точное количество людей, находящихся внутри, пока неизвестно. Сотрудники правоохранительных органов уже оцепили прилегающую территорию. Жителям настоятельно рекомендуется избегать данного района.' },
+  { date:'2026-10-09', tag:'Новости', title:'Что происходит в городе', img:IMG('yA1rHvK'),
+    text:'Напряжённая полицейская операция обернулась перестрелкой: при попытке задержания подозреваемый внезапно открыл огонь по офицерам. Ситуация мгновенно вышла из-под контроля, и правоохранители были вынуждены ответить на вооружённое нападение. В результате перестрелки подозреваемый был ранен.' },
+  { date:'2026-10-010', tag:'Новости', title:'Крик улиц', img:IMG('qLfTu6Y'),
+    text:'В городе развернулась продолжительная погоня с участием правоохранительных органов. После преследования сотрудники полиции смогли остановить подозреваемых и задержать двух человек. Обстоятельства, послужившие причиной погони, на данный момент не раскрываются.' },
+  /* >>> ТРИ БЛОКА-ЗАГОТОВКИ (замените заголовок, текст и картинку на свои) <<< */
+  { date:'2026-10-14', tag:'Новости', title:'Пламя', img:IMG('Zuccq7N'),
+    text:'Сегодня по адресу 8209 Magellan Avenue произошло возгорание, прибывшие на место пожарные оперативно приступили к тушению и в короткие сроки справились с огнем. По имеющейся на данный момент информации, сведения о пострадавших отсутствуют, а обстоятельства возникновения пожара уточняются.' },
+].sort((a,b) => String(b.date).localeCompare(String(a.date)));
+/* БИЛБОРДЫ: [номер, улица, код, статус (1 — свободен, 0 — занят), описание (можно не указывать)]. D и P — сокращения */
+const D = 'Отличная видимость с основной магистрали города.', P = 'Шоссе Дель-Перро';
+const BB = [
+  [1,'Синнер-стрит, Мишн-Роу',8177,0,'Высокий пешеходный и автомобильный трафик.'],
+  [2,'Элгин-авеню, Хавик',7105,0,],[3,'Бульвар Эль-Ранчо, Мурьета-Хайтс',7326,0,],
+  [4,'Попьюлар-стрит, Ла-Меса',8182,1,],[5,'шоссе Элизиан-Филдз, Мурьета-Хайтс',9248,1,],[6,'Шоссе Ла-Пуэрта, Строберри',9035,1,],[7,'Литл-Бигхорн-авеню, Ранчо',9061,1,],[8,'Шоссе Олимпик, Строберри',9052,1,],[9,'Литл-Бигхорн-авеню, Ранчо',9187,1,],
+  [10,'Бульвар Роя Левенштейна, Ранчо',9162,0,],[11,'Истборн-вэй, Бертон',7205,1,],[12,'Бульвар Лас-Лагунас, Западный Вайнвуд',7079,0,],[13,'Дэвис-авеню, Ла-Пуэрта',9000,0,],[14,'Шоссе Лос-Сантоса, Пустыня Гранд-Сенора',3036,1,],
+  [15,'Шоссе 68, Пустыня Гранд-Сенора',3045,0,],[16,'Ист-Джошуа-роуд, Грейпсид',2048,0,],[17,'Джошуа-роуд, Сэнди-Шорс',3035,1,],[18,'Джошуа-роуд, Пустыня Гранд-Сенора',3036,0,],[19,'Джошуа-роуд, Пустыня Гранд-Сенора',3030,1,],
+].map(([n,s,c,f,t]) => ({ n, s, c, title:`Билборд №${n} — ${s} [${c}]`, free:!!f, text:t || '' }));
+const FREE = BB.filter(b => b.free).length;
+/* ЦЕНЫ: ['Название', 'Услуга — цена\nУслуга — цена']. Строка без « — » выводится как серое примечание.
+   Эти же услуги автоматически попадают в форму записи. */
+const PRICES = [
+  ['Печать и реклама', 'Визитки (1 шт.) — 25$\nБуклеты (10 шт.) — 400$\nЖурнал (1 шт.) — от 1000$\nМеню (20 шт.) — 500$\nРазмещение рекламы в газете — 800$\nРазмещение рекламы на портале штата — 1500$'],
+  ['Фото и видео', 'Фотосессия одиночная (до 10 фото) — 1500$\nФотосессия парная (до 10 фото) — 2000$\nОбработка одного фото — 150$\nРекламные ролики/клипы (до 3 мин) — от 3500$\nМонтаж видео — от 1500$'],
+  ['Дизайн и текст', 'Дизайн на заказ — от 1500$\nДизайн меню — от 2000$\nДизайн буклета — от 1000$\nДизайн визитки — от 2000$\n*Цена повышается в зависимости от сложности дизайна\nНаписание заказных статей — 1000$\nЗаказное интервью/репортаж — 2000$'],
 ];
+/* КОМАНДА (Контакты). img — ссылка на фото; если пусто, показываются инициалы */
+const TEAM = [
+  { name:'Molly Mercantile', role:'Главный редактор', phone:'370-1077', img:'',
+    text:'Отвечает за выпуск новостей и рекламные заказы. Пишите ей по любым вопросам сотрудничества.' },
+  { name:'Ify Jelani', role:'Заместитекль главного редактора', phone:'872-8988', img:'',
+    text:'Ведёт съёмки, репортажи и интервью. Принимает заказы на фотосессии и видео. Пишите ей по любым вопросам сотрудничества.' },
+];
+/* ================================================================================ */
 
-/* Тексты для значков сложности */
-const LEVELS = {easy:'Легко', mid:'Средне', hard:'Сложно'};
+/* ВКЛАДКИ: ['адрес', 'название в меню']. Новая вкладка: добавьте сюда и в VIEWS ниже */
+const PAGES = [['home','Главная'],['billboards','Билборды'],['contacts','Контакты'],['prices','Цены и услуги']];
+const $ = s => document.querySelector(s);
+const img = (src, alt='') => src ? `<img src="${src}" alt="${alt}" loading="lazy" referrerpolicy="no-referrer" draggable="false" onerror="this.remove()">` : '';
+const ml = t => t.split('\n').filter(Boolean);
+const tel = p => 'tel:' + p.replace(/[^\d+]/g, '');
+const plural = (n,a,b,c) => { const m=n%100, d=n%10; return m>10&&m<20 ? c : d===1 ? a : d>1&&d<5 ? b : c };
+const fmtDate = d => { const m = String(d||'').match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? `${m[3]}.${m[2]}.${m[1]}` : '' };
 
-/* ---------- Шапка: меняет фон при прокрутке ---------- */
-const header = document.getElementById('top');
-addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 40));
+const newsCard = (n, i) => `<article class="card"><div class="im">${img(n.img,n.title)}</div><div class="tag">${n.tag}${i===0?'<span class="new">Новое</span>':''}</div><h3>${n.title}</h3>${n.date?`<div class="dt">${fmtDate(n.date)}</div>`:''}<p>${n.text}</p></article>`;
+// Шапка внутренней страницы: pghead(заголовок, текст, кнопки, блок справа)
+const pghead = (t, lead, acts='', aside='') => `<section class="pghead"><div class="wrap"><div><h1>${t}</h1>${lead?`<p class="lead">${lead}</p>`:''}${acts?`<div class="acts">${acts}</div>`:''}</div>${aside?`<div>${aside}</div>`:''}</div></section>`;
+const phones = cls => TEAM.map(p => `<a class="btn ${cls} sm" href="${tel(p.phone)}">${p.name.split(' ')[0]}: ${p.phone}</a>`).join('');
+const priceRow = l => { const i = l.lastIndexOf(' — ');
+  return i < 0 ? `<p class="pnote">${l}</p>` : `<div class="pr"><span>${l.slice(0,i)}</span><b>${l.slice(i+3).replace(/^от\s+/,'<small>от</small> ')}</b></div>` };
 
-/* ---------- Вкладки ---------- */
-const tabsEl = document.getElementById('tabs');
-const gridEl = document.getElementById('grid');
+// Форма записи: услуги берутся из PRICES, билборды — свободные из BB
+const bookingForm = () => `<form class="form" id="bf" novalidate>
+  <div class="fgrid">
+    <div class="fld"><label for="f-name">Ваше имя</label><input class="inp" id="f-name" name="name" required autocomplete="name" placeholder="Имя и фамилия"></div>
+    <div class="fld"><label for="f-contact">Ваш контакт</label><input class="inp" id="f-contact" name="contact" required placeholder="Телефон, Discord или почта"></div>
+  </div>
+  <fieldset class="fld"><legend>Услуги</legend>
+    ${PRICES.map(([t,x])=>`<div class="sg">${t}</div><div class="opts">${ml(x).filter(l=>l.includes(' — ')).map(l=>{const i=l.lastIndexOf(' — '),n=l.slice(0,i),p=l.slice(i+3);
+      return `<label class="opt"><input type="checkbox" name="srv" value="${n} (${p})"><span>${n}</span><small>${p}</small></label>`}).join('')}</div>`).join('')}
+  </fieldset>
+  <div class="fgrid">
+    <div class="fld"><label for="f-bb">Билборд</label><select class="inp" id="f-bb" name="bb"><option value="">Билборд не нужен</option>${BB.filter(b=>b.free).map(b=>`<option value="${b.title}">№${b.n} — ${b.s} [${b.c}]</option>`).join('')}</select></div>
+    <div class="fld"><label for="f-time">Желаемые дата и время</label><input class="inp" id="f-time" name="time" placeholder="Например: завтра после 18:00"></div>
+  </div>
+  <div class="fld"><label for="f-comment">Комментарий</label><textarea class="inp" id="f-comment" name="comment" placeholder="Расскажите, что нужно сделать, и добавьте детали"></textarea></div>
+  <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+  <div class="acts" style="align-items:center"><button class="btn" type="submit">Отправить заявку</button><span class="fmsg" id="fmsg" role="status"></span></div>
+</form>`;
 
-// Создаём кнопки вкладок из списка CATEGORIES
-CATEGORIES.forEach((cat, i) => {
-  const b = document.createElement('button');
-  b.className = 'tab' + (i === 0 ? ' active' : '');
-  b.innerHTML = `${cat.name}<sup>${cat.maps.length}</sup>`;
-  b.onclick = () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    b.classList.add('active');
-    render(cat);               // перерисовать карточки выбранной вкладки
+const VIEWS = {
+  home: () => `
+    <section class="hero">
+      <div class="hero-l">
+        <span class="cap">Независимое медиа Лос-Сантоса</span>
+        <h1>Город говорит.<br>Мы показываем.</h1>
+        <p class="sub">Новости, расследования и прямые эфиры. Всё, чем живёт Лос-Сантос.</p>
+        <div class="btns"><a class="btn" href="#news" data-scroll="news">Читать новости</a><a class="lnk" href="#/contacts">Связаться с нами</a></div>
+      </div>
+      <div class="hero-r">${img(CFG.heroImg,'Лос-Сантос')}<span class="badge">В фокусе</span>
+        <div class="hero-cap"><h3>Лос-Сантос сегодня</h3><span class="cap">Больше, чем просто город</span></div></div>
+    </section>
+    <section class="blk" id="news"><div class="wrap">
+      <div class="sh"><div><h2>Последние новости</h2><p>Самые свежие — слева. Листайте вправо, чтобы увидеть более ранние.</p></div></div>
+      <div class="sw" id="sw">
+        <button class="arr prev off" type="button" data-slide="-1" aria-label="Назад">&#8592;</button>
+        <div class="slider" id="slider">${NEWS.map(newsCard).join('')}</div>
+        <button class="arr next" type="button" data-slide="1" aria-label="Вперёд">&#8594;</button>
+      </div>
+    </div></section>`,
+
+  billboards: () => `
+    ${pghead('Ваша реклама — на виду у всего города','Хотите, чтобы о вашем бизнесе узнали тысячи людей? Выберите подходящую локацию, разместите рекламу и сделайте свой бренд заметным прямо на улицах города.',
+      `<a class="btn" href="#bbapp" data-scroll="bbapp">Выбрать локацию</a>`,
+      `<div class="facts"><div><b>${BB.length}</b><span>Всего</span></div><div><b class="g">${FREE}</b><span>Свободно</span></div><div><b class="r">${BB.length-FREE}</b><span>Занято</span></div></div>`)}
+    <section class="blk"><div class="wrap">
+      <div id="bbapp"></div>
+      <div class="help"><div><h3>Не упускайте возможность</h3><p>Займите свой билборд уже сегодня.</p></div><a class="btn" href="#/prices" data-scroll-after="booking">Оставить заявку</a></div>
+    </div></section>`,
+
+  contacts: () => `
+    ${pghead('Напишите нам','Расскажите, что нужно сделать, — ответим в течение двух рабочих дней.',`<a class="btn" href="mailto:${CFG.email}">Написать на почту</a>`)}
+    <section class="blk"><div class="wrap">
+      <div class="sh"><h2>Как с нами связаться</h2></div>
+      <div class="cgrid">
+        <div class="cc"><span class="k">Адрес</span><span class="v">${CFG.address}</span><div class="acts"><button class="btn ghost sm" data-copy="${CFG.address}">Скопировать</button></div></div>
+        <div class="cc"><span class="k">Почта</span><a class="v" href="mailto:${CFG.email}">${CFG.email}</a><div class="acts"><a class="btn sm" href="mailto:${CFG.email}">Написать</a><button class="btn ghost sm" data-copy="${CFG.email}">Скопировать</button></div></div>
+        <div class="cc"><span class="k">Время ответа</span><span class="v">До двух рабочих дней</span></div>
+      </div>
+    </div></section>
+    <section class="blk" style="padding-top:0"><div class="wrap">
+      <div class="sh"><div><h2>Наша команда</h2><p>Люди, которые делают Weazel News каждый день</p></div></div>
+      <div class="team">${TEAM.map(p=>`<article class="tp"><div class="av">${p.img?img(p.img,p.name):p.name.split(' ').map(w=>w[0]).join('')}</div>
+        <div class="tb"><span class="role">${p.role}</span><h3>${p.name}</h3><p>${p.text}</p>
+        <div class="acts"><a class="btn sm" href="${tel(p.phone)}">Позвонить ${p.phone}</a><button class="btn ghost sm" data-copy="${p.phone}">Копировать</button></div></div></article>`).join('')}</div>
+    </div></section>`,
+
+  prices: () => `
+    ${pghead('Цены и услуги','Выберите услуги и оставьте заявку прямо здесь — мы свяжемся с вами. По остальным вопросам звоните или приходите лично.',
+      `<a class="btn" href="#booking" data-scroll="booking">Записаться</a><a class="btn ghost" href="#/contacts">Контакты</a>`)}
+    <section class="blk"><div class="wrap">
+      <div class="chips" role="group" aria-label="Категории">${[['all','Все услуги'],...PRICES.map(([t],i)=>[String(i),t])].map(([k,t])=>`<button data-pf="${k}" aria-pressed="${k==='all'}">${t}</button>`).join('')}</div>
+      <div class="pgrid" id="pgrid">${PRICES.map(([t,x],i)=>{const n=ml(x).filter(l=>l.includes(' — ')).length;
+        return `<section class="pc" data-i="${i}"><header><h2>${t}</h2><span class="cap">${n} ${plural(n,'услуга','услуги','услуг')}</span></header>${ml(x).map(priceRow).join('')}</section>`}).join('')}</div>
+      <section class="book" id="booking">
+        <div class="intro"><h2>Онлайн-запись</h2><p>Отметьте нужные услуги, выберите билборд при необходимости и напишите удобное время. Мы свяжемся с вами по указанному контакту.</p></div>
+        <div id="bform">${bookingForm()}</div>
+      </section>
+      <div class="help"><div><h3>Нужна услуга, которой нет в списке?</h3><p>Позвоните или приходите лично: ${CFG.address}.</p></div><div class="acts">${phones('ghost')}</div></div>
+    </div></section>`,
+};
+
+/* ---- ЛОГИКА ---- */
+/* Лента новостей: перетаскивание мышью (пальцем листается само), стрелки по бокам, стрелки прячутся на краях и если всё помещается */
+function initSlider(){
+  const s = $('#slider'), w = $('#sw'); if(!s || !w) return;
+  const prev = w.querySelector('.prev'), next = w.querySelector('.next');
+  const gap = () => parseFloat(getComputedStyle(s).columnGap || 0) || 0;
+  const step = () => { const c = s.querySelector('.card'); return c ? c.offsetWidth + gap() : 300 };
+  const upd = () => {
+    const fit = s.scrollWidth <= s.clientWidth + 4;
+    prev.hidden = next.hidden = fit;
+    prev.classList.toggle('off', s.scrollLeft < 4);
+    next.classList.toggle('off', s.scrollLeft + s.clientWidth >= s.scrollWidth - 4);
   };
-  tabsEl.appendChild(b);
+  let down = false, moved = false, sx = 0, sl = 0;
+  s.addEventListener('pointerdown', e => { if(e.pointerType !== 'mouse' || e.button !== 0) return;
+    down = true; moved = false; sx = e.clientX; sl = s.scrollLeft });
+  addEventListener('pointermove', e => { if(!down) return; const dx = e.clientX - sx;
+    if(!moved && Math.abs(dx) > 5){ moved = true; s.classList.add('drag') }
+    if(moved) s.scrollLeft = sl - dx });
+  const end = () => { if(!down) return; down = false;
+    if(moved){ s.classList.remove('drag');
+      const cards = [...s.querySelectorAll('.card')];
+      if(cards.length){ const i = Math.round(s.scrollLeft / step());
+        s.scrollTo({ left: cards[Math.min(Math.max(i,0),cards.length-1)].offsetLeft - s.offsetLeft, behavior:'smooth' }) } } };
+  addEventListener('pointerup', end); addEventListener('pointercancel', end);
+  s.addEventListener('click', e => { if(moved){ e.preventDefault(); e.stopPropagation(); moved = false } }, true);
+  w.addEventListener('click', e => { const b = e.target.closest('[data-slide]'); if(!b) return;
+    s.scrollBy({ left: +b.dataset.slide * step(), behavior:'smooth' }) });
+  s.addEventListener('scroll', upd, { passive:true });
+  addEventListener('resize', () => { if(document.body.contains(s)) upd() });
+  upd(); setTimeout(upd, 400);
+}
+
+/* Билборды: фильтр, поиск, список + карта с точками. Информация о билборде всплывает рядом с точкой при наведении (на телефоне — при нажатии).
+   ?calibrate — режим разметки точек */
+function initBillboards(){
+  const box = $('#bbapp'); if(!box) return;
+  const cal = /[?&]calibrate/.test(location.search), narrow = () => matchMedia('(max-width:960px)').matches;
+  let filter='all', q='', sel=null, hov=null, hideT=0, cur='', pos={...BB_POS};
+  box.innerHTML = `
+    <div class="tools"><div class="seg" role="group" aria-label="Статус">${[['all','Все',BB.length],['free','Свободные',FREE],['busy','Занятые',BB.length-FREE]].map(([k,t,n])=>`<button data-f="${k}" aria-pressed="${k==='all'}">${t}<span>${n}</span></button>`).join('')}</div>
+      <input class="search" id="bbq" type="search" placeholder="Поиск по улице, номеру или коду" aria-label="Поиск билборда"></div>
+    <div class="bbgrid"><div class="bblist" id="bbl"></div>
+      <aside class="bbside">${cal?'<div class="cal" id="cal"></div>':''}
+        <div class="map" id="map">${CFG.mapImg?img(CFG.mapImg,'Карта билбордов'):'<div class="mapempty">Укажите ссылку на карту в CFG.mapImg</div>'}<div class="pins" id="pins"></div><div class="tip" id="tip" role="tooltip"></div></div>
+        <p class="cap hintcap">Наведите на точку на карте или выберите билборд в списке — рядом появится информация.</p></aside></div>`;
+  const list = () => BB.filter(b => (filter==='all' || (filter==='free')===b.free) && `${b.n} ${b.s} ${b.c}`.toLowerCase().includes(q));
+
+  /* Подсветка строки и точки */
+  const mark = () => { const on = hov ?? sel;
+    box.querySelectorAll('.bbrow').forEach(r=>r.setAttribute('aria-pressed',String(+r.dataset.n===sel)));
+    box.querySelectorAll('.pin').forEach(p=>p.classList.toggle('on',+p.dataset.n===on)) };
+
+  /* Всплывающая карточка рядом с точкой */
+  const place = n => {
+    const t = $('#tip'), m = $('#map'), a = BB.find(b=>b.n===n); if(!t || !m || !a) return;
+    t.innerHTML = `<span class="st ${a.free?'':'busy'}">${a.free?'Свободен':'Занят'}</span><h3>${a.title}</h3>${a.text?`<p>${a.text}</p>`:''}${a.free?'<a class="btn sm" href="#/prices" data-scroll-after="booking">Оставить заявку</a>':''}${pos[n]?'':'<p class="cap">Точка на карте пока не размечена.</p>'}`;
+    t.classList.add('show');
+    const W = m.clientWidth, H = m.clientHeight, w = t.offsetWidth, h = t.offsetHeight, gap = 14, clamp = (v,lo,hi) => Math.max(lo,Math.min(hi,v));
+    let left, top;
+    if(!pos[n]){ left = (W-w)/2; top = (H-h)/2 }
+    else{
+      const x = pos[n][0]/100*W, y = pos[n][1]/100*H;
+      if(x+gap+w <= W){ left = x+gap; top = clamp(y-h/2, 0, Math.max(0,H-h)) }
+      else if(x-gap-w >= 0){ left = x-gap-w; top = clamp(y-h/2, 0, Math.max(0,H-h)) }
+      else{ left = clamp(x-w/2, 0, Math.max(0,W-w)); top = (y+gap+h <= H) ? y+gap : (y-gap-h >= 0 ? y-gap-h : y+gap) }
+    }
+    t.style.left = Math.round(left)+'px'; t.style.top = Math.round(top)+'px';
+  };
+  const refresh = () => { const n = hov ?? sel; if(n!=null) place(n); else $('#tip')?.classList.remove('show'); mark() };
+  const scheduleHide = () => { clearTimeout(hideT); hideT = setTimeout(()=>{ hov=null; refresh() }, 180) };
+
+  const drawPins = () => { $('#pins').innerHTML = list().filter(b=>pos[b.n]).map(b=>`<button class="pin ${b.free?'free':'busy'}" style="left:${pos[b.n][0]}%;top:${pos[b.n][1]}%" data-n="${b.n}" aria-label="${b.title}">${b.n}</button>`).join('') };
+  const drawList = () => { const l = list(); if(sel && !l.some(b=>b.n===sel)) sel=null; hov=null;
+    $('#bbl').innerHTML = l.length ? l.map(b=>`<button class="bbrow" data-n="${b.n}"><span class="bbn">${b.n}</span><span><b>${b.s}</b><small>Код ${b.c}</small></span><span class="st ${b.free?'':'busy'}">${b.free?'Свободен':'Занят'}</span></button>`).join('') : '<div class="empty">Ничего не найдено. Измените фильтр или запрос.</div>';
+    drawPins(); refresh() };
+  const select = (n, src) => { sel = (sel===n && src==='pin') ? null : n; hov=null; refresh();
+    if(src==='row' && narrow()) $('#map').scrollIntoView({behavior:'smooth',block:'start'});
+    if(src==='pin' && !narrow()) box.querySelector(`.bbrow[data-n="${n}"]`)?.scrollIntoView({block:'nearest',behavior:'smooth'}) };
+
+  box.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{filter=b.dataset.f;box.querySelectorAll('[data-f]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));drawList()});
+  $('#bbq').oninput = e => { q=e.target.value.trim().toLowerCase().replace(/^№/,''); drawList() };
+  $('#bbl').onclick = e => { const r=e.target.closest('.bbrow'); if(r) select(+r.dataset.n,'row') };
+  $('#pins').onclick = e => { const p=e.target.closest('.pin'); if(p){ e.stopPropagation(); select(+p.dataset.n,'pin') } };
+  /* Наведение на точку */
+  $('#pins').addEventListener('mouseover', e => { const p=e.target.closest('.pin'); if(p){ clearTimeout(hideT); hov=+p.dataset.n; refresh() } });
+  $('#pins').addEventListener('mouseout', e => { if(e.target.closest('.pin')) scheduleHide() });
+  $('#tip').addEventListener('mouseenter', () => clearTimeout(hideT));
+  $('#tip').addEventListener('mouseleave', scheduleHide);
+  /* Клик по пустому месту карты — закрыть карточку */
+  if(!cal) $('#map').addEventListener('click', e => { if(e.target.closest('.pin,.tip')) return; sel=null; hov=null; refresh() });
+
+  if(cal){
+    const drawCal = () => { $('#cal').innerHTML = `<b>Режим разметки</b><span>Выберите билборд, затем кликните на карте — он встанет на место. Потом нажмите «Скопировать» и вставьте координаты в BB_POS.</span>
+      <div class="acts"><select id="cs"><option value="">— билборд —</option>${BB.map(b=>`<option value="${b.n}" ${String(b.n)===cur?'selected':''}>${pos[b.n]?'✓ ':''}${b.title}</option>`).join('')}</select>
+      <button class="btn sm" id="ce">Скопировать (${Object.keys(pos).length}/${BB.length})</button></div>`;
+      $('#map').style.cursor = cur ? 'crosshair' : '';
+      $('#cs').onchange = e => { cur=e.target.value; drawCal() };
+      $('#ce').onclick = () => { const t='const BB_POS = {\n'+Object.entries(pos).sort((x,y)=>x[0]-y[0]).map(([k,v])=>`  ${k}:[${v}],`).join('\n')+'\n};';
+        navigator.clipboard?.writeText(t).then(()=>toast('Координаты скопированы'),()=>prompt('Скопируйте:',t)) } };
+    $('#map').onclick = e => { if(!cur || e.target.closest('.pin,.tip')) return; const r=e.currentTarget.getBoundingClientRect();
+      pos[cur]=[+((e.clientX-r.left)/r.width*100).toFixed(1),+((e.clientY-r.top)/r.height*100).toFixed(1)];
+      const i=BB.findIndex(b=>String(b.n)===cur); cur=BB[i+1]?String(BB[i+1].n):''; drawCal(); drawPins(); mark() };
+    drawCal();
+  }
+  addEventListener('resize', () => { if(document.body.contains(box)) refresh() });
+  drawList();
+}
+
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),2800)}
+let after = '';   // куда прокрутить после перехода на другую вкладку
+function route(){
+  const id = (location.hash.match(/^#\/(\w+)/)||[])[1];
+  const cur = PAGES.some(p=>p[0]===id) ? id : 'home';
+  $('#app').innerHTML = VIEWS[cur]();
+  document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.dataset.p===cur));
+  document.title = (cur==='home' ? '' : PAGES.find(p=>p[0]===cur)[1]+' — ') + 'Weazel News';
+  if(cur==='home') initSlider();
+  if(cur==='billboards') initBillboards();
+  window.scrollTo(0,0);
+  if(after){ const t=after; after=''; setTimeout(()=>document.getElementById(t)?.scrollIntoView(),0) }
+}
+document.addEventListener('click',e=>{
+  const s=e.target.closest('[data-scroll]'); if(s){e.preventDefault();document.getElementById(s.dataset.scroll)?.scrollIntoView()}
+  const a=e.target.closest('[data-scroll-after]'); if(a) after=a.dataset.scrollAfter;
+  const c=e.target.closest('[data-copy]'); if(c) navigator.clipboard?.writeText(c.dataset.copy).then(()=>toast('Скопировано: '+c.dataset.copy),()=>toast(c.dataset.copy));
+  const f=e.target.closest('[data-pf]'); if(f){ const k=f.dataset.pf, g=$('#pgrid');
+    document.querySelectorAll('[data-pf]').forEach(b=>b.setAttribute('aria-pressed',String(b===f)));
+    g.classList.toggle('one',k!=='all'); g.querySelectorAll('.pc').forEach(c=>c.hidden = k!=='all' && c.dataset.i!==k) }
+  if(e.target.closest('[data-again]')) $('#bform').innerHTML = bookingForm();
 });
 
-/* ---------- Отрисовка карточек ---------- */
-/* ---------- Рисованный баннер: закат + город + пальмы + машина ----------
-   Принимает 3 цвета неба. Всё рисуется в SVG, внешних картинок не нужно. */
-function scene(c){
-  let seed = c[1].charCodeAt(2) * 7;                       // "случайность" для каждой вкладки своя, но стабильная
-  const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
-  let towers = '';
-  for(let x = 380; x < 1000; x += 26){                      // небоскрёбы справа-в-центре
-    const h = 60 + rnd() * 170, w = 18 + rnd() * 22;
-    towers += `<rect x="${x}" y="${340 - h}" width="${w}" height="${h}" fill="#0b0a14"/>`;
-    for(let k = 0; k < h / 14; k++) if(rnd() > .55)         // светящиеся окна
-      towers += `<rect x="${x + 4 + rnd() * (w - 8)}" y="${340 - h + 8 + k * 14}" width="2" height="3" fill="#ffd9a0" opacity=".8"/>`;
-  }
-  const palm = x => `<g transform="translate(${x} 340)"><path d="M0 0 Q6 -120 -4 -210" stroke="#07060c" stroke-width="7" fill="none"/>
-    <g stroke="#07060c" stroke-width="5" fill="none" stroke-linecap="round"><path d="M-4 -210 q-50 -10 -75 25"/><path d="M-4 -210 q-30 -40 -70 -30"/>
-    <path d="M-4 -210 q40 -40 80 -20"/><path d="M-4 -210 q45 0 70 35"/><path d="M-4 -210 q5 -50 -10 -70"/></g></g>`;
-  return `<svg viewBox="0 0 1000 340" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-    <defs><linearGradient id="sk${c[1]}" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${c[0]}"/><stop offset=".55" stop-color="${c[1]}"/><stop offset="1" stop-color="${c[2]}"/></linearGradient></defs>
-    <rect width="1000" height="340" fill="url(#sk${c[1]})"/>
-    <circle cx="760" cy="215" r="22" fill="#ffe6b0"/><circle cx="760" cy="215" r="60" fill="#ffb86b" opacity=".25"/>
-    ${towers}
-    <path d="M0 340 L0 270 Q250 230 500 290 T1000 260 L1000 340Z" fill="#0a0910"/>
-    ${palm(70)}${palm(930)}
-    <path d="M0 340 L1000 340 L1000 318 Q600 300 0 322Z" fill="#050409"/>
-    <g transform="translate(610 262)">                      <!-- машина сзади со стоп-сигналами -->
-      <path d="M0 40 L12 12 Q40 0 120 0 Q200 0 228 12 L240 40Z" fill="#0b0b12"/>
-      <rect x="-4" y="38" width="248" height="14" rx="4" fill="#050509"/>
-      <rect x="20" y="-6" width="200" height="8" rx="3" fill="#0b0b12"/>
-      <circle cx="26" cy="26" r="9" fill="#ff2a1f"/><circle cx="48" cy="26" r="9" fill="#ff2a1f"/>
-      <circle cx="214" cy="26" r="9" fill="#ff2a1f"/><circle cx="192" cy="26" r="9" fill="#ff2a1f"/>
-      <circle cx="26" cy="26" r="22" fill="#ff2a1f" opacity=".25"/><circle cx="214" cy="26" r="22" fill="#ff2a1f" opacity=".25"/>
-    </g></svg>`;
-}
+/* Отправка заявки в Google Таблицу через Apps Script (CFG.sheetUrl) */
+document.addEventListener('submit', async e => {
+  const f = e.target.closest?.('#bf'); if(!f) return; e.preventDefault();
+  const fd = new FormData(f); if(fd.get('website')) return;
+  const d = { name:fd.get('name').trim(), contact:fd.get('contact').trim(), services:fd.getAll('srv').join('; '),
+    billboard:fd.get('bb'), time:fd.get('time').trim(), comment:fd.get('comment').trim() };
+  const m = $('#fmsg'), b = f.querySelector('[type=submit]'), err = t => { m.textContent=t; m.className='fmsg err' };
+  if(!d.name || !d.contact) return err('Укажите имя и контакт, чтобы мы могли с вами связаться.');
+  if(!d.services && !d.billboard && !d.comment) return err('Выберите услугу или билборд либо опишите задачу в комментарии.');
+  if(!CFG.sheetUrl) return err('Форма пока не подключена к таблице: вставьте ссылку в CFG.sheetUrl.');
+  b.disabled = true; b.textContent = 'Отправляем…'; m.textContent = ''; m.className = 'fmsg';
+  try{
+    await fetch(CFG.sheetUrl, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(d) });
+    $('#bform').innerHTML = `<div class="done"><h3>Заявка отправлена</h3><p>Мы свяжемся с вами по указанному контакту: ${d.contact.replace(/[<>&]/g,'')}.</p><button class="btn ghost sm" data-again>Отправить ещё одну</button></div>`;
+  }catch(_){ err('Не удалось отправить. Проверьте интернет и попробуйте ещё раз.'); b.disabled=false; b.textContent='Отправить заявку' }
+});
 
-/* ---------- Данные блока «Логистика» (меняйте тексты и цены под себя) ---------- */
-const LOGISTICS = [
-  {ico:'🚛', t:'Перевозка авто',  d:'Автовоз доставит вашу машину на место заезда: без пробега и износа резины перед стартом.', p:'от 5 000 $'},
-  {ico:'📦', t:'Грузовые рейсы',  d:'Перевозка тюнинга, запчастей и оборудования для ивентов между точками города.', p:'от 2 500 $'},
-  {ico:'🛠', t:'Эвакуатор 24/7',  d:'Сломались на трассе? Эвакуатор приедет к вам и доставит машину в мастерскую.', p:'от 1 000 $'},
-  {ico:'🚓', t:'Сопровождение колонны', d:'Эскорт для групповых выездов: перекрываем перекрёстки и ведём колонну до трассы.', p:'бесплатно для членов клуба'}
-];
+$('#nav').innerHTML = PAGES.map(([id,t])=>`<a href="#/${id}" data-p="${id}">${t}</a>`).join('');
+$('#fnav').innerHTML = PAGES.map(([id,t])=>`<a href="#/${id}">${t}</a>`).join('');
+$('#copy').textContent = CFG.copy;
+$('#mail').textContent = CFG.email;
 
-function renderBanner(cat){
-  // Если у вкладки есть своя фотка (banner:'путь') — показываем её, иначе рисуем сцену кодом
-  const bg = cat.banner ? `style="background-image:url('${cat.banner}')"` : '';
-  document.getElementById('bannerBox').innerHTML = `
-    <div class="banner" ${bg}>${cat.banner ? '' : scene(cat.sky)}
-      <div class="txt"><small>LS Racing • ${cat.name}</small><h3>${cat.title}</h3><p>${cat.text}</p></div>
-    </div>`;
-}
+/* Кнопка эфира: есть ссылка — ведём на неё, нет — показываем «эфира нет» */
+(()=>{ const l=$('#live'), url=(CFG.liveUrl||'').trim();
+  if(url){ l.href=url; l.target='_blank'; l.rel='noopener'; l.innerHTML='<i></i>'+CFG.liveOnText }
+  else{ l.classList.add('off'); l.href='#'; l.removeAttribute('target'); l.innerHTML='<i></i>'+CFG.liveOffText;
+    l.setAttribute('aria-label',CFG.liveOffText);
+    l.addEventListener('click',e=>{ e.preventDefault(); toast(CFG.liveOffMsg) }) } })();
 
-function renderLogistics(cat){
-  const box = document.getElementById('logiBox');
-  if(!cat.logistics){ box.innerHTML = ''; return; }   // блок виден только если у вкладки стоит logistics:true
-  box.innerHTML = `
-    <div class="logi">
-      <h2 class="sec-title">Логистика</h2>
-      <p class="sec-sub">Перевозим машины, грузы и людей — чтобы вы приезжали на старт вовремя и в полной боевой готовности.</p>
-      <div class="logi-grid">
-        ${LOGISTICS.map((l,i) => `<div class="lcard" data-n="0${i+1}"><div class="ico">${l.ico}</div>
-          <h4>${l.t}</h4><p>${l.d}</p><div class="price">${l.p}</div></div>`).join('')}
-      </div>
-      <div class="route">
-        <div class="st">Заявка</div><div class="ln"></div><div class="st">Погрузка</div><div class="ln"></div>
-        <div class="st">В пути</div><div class="ln"></div><div class="st">Старт!</div>
-      </div>
-    </div>`;
-}
-
-function render(cat){
-  renderBanner(cat);      // 1) баннер вкладки
-  renderLogistics(cat);   // 3) логистика (если включена)
-  gridEl.innerHTML = '';
-  cat.maps.forEach((m, i) => {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.style.animationDelay = (i * 0.08) + 's';   // красивое поочерёдное появление
-    card.innerHTML = `
-      <div class="ph">Загрузите карту</div>
-      <img src="${m.img}" alt="${m.title}" onerror="this.remove()">
-      <div class="shade"></div>
-      <span class="badge ${m.level}">${LEVELS[m.level]}</span>
-      <div class="meta">
-        <h3>${m.title}</h3>
-        <div class="stats"><span>Дистанция: <b>${m.dist}</b></span><span>Круги: <b>${m.laps}</b></span></div>
-      </div>`;
-    card.onclick = () => openModal(m);
-    gridEl.appendChild(card);
-  });
-}
-render(CATEGORIES[0]);   // при загрузке показываем первую вкладку
-
-/* ---------- Окно просмотра ---------- */
-const modal = document.getElementById('modal');
-function openModal(m){
-  const img = document.getElementById('mImg');
-  img.src = m.img;
-  img.style.display = 'block';
-  img.onerror = () => img.style.display = 'none';   // если картинки нет — прячем
-  document.getElementById('mTitle').textContent = m.title;
-  document.getElementById('mDesc').textContent = `${m.desc}  •  ${m.dist}  •  кругов: ${m.laps}`;
-  modal.classList.add('open');
-}
-const closeModal = () => modal.classList.remove('open');
-document.getElementById('close').onclick = closeModal;
-modal.onclick = e => { if (e.target === modal) closeModal(); };   // клик по фону закрывает
-addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });  // Esc тоже
+const heads = NEWS.map(n=>n.title).concat(['Weazel News — главные события Лос-Сантоса в прямом эфире']);
+$('#tt').innerHTML = [...heads,...heads].map(t=>`<span>${t}</span>`).join('');
+addEventListener('hashchange',route);
+route();
 </script>
 </body>
 </html>
